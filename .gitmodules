@@ -1,0 +1,3 @@
+[submodule "small-php"]
+	path = small-php
+	url = https://github.com/loicqql/small-php
