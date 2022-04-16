@@ -1,5 +1,12 @@
 # ProjetS2PhpBack
-## Update small-php
+
+## Submodules (small-php)
+### Init
 ```
-git submodule foreach git pull
+git submodule init
+git submodule update
+```
+### Update
+```
+git submodule foreach git pull https://github.com/loicqql/small-php main
 ```
