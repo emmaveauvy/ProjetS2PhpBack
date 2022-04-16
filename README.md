@@ -1,6 +1,6 @@
 # ProjetS2PhpBack
 
-## Submodules (small-php)
+## Submodule (small-php)
 ### Init
 ```
 git submodule init
