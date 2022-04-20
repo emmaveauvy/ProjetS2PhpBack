@@ -23,3 +23,10 @@ $small->get('/user', function($request, $response) {
     
     return $response;
 });
+
+$small->get('user/{id}', function($request, $response) {
+
+    $response->setData(['id'=> $request->resource['id']]);
+
+    return $response;
+});
