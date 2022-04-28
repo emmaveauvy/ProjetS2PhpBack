@@ -25,7 +25,7 @@ function listUser(){
 
 function deleteUser($id){
     $PDO = getPDO();
-    $sth = $PDO->prepare("DELETE * FROM creators WHERE id = :id");
+    $sth = $PDO->prepare("DELETE FROM creators WHERE id = :id");
     $sth->execute(array('id' => $id));
     return listUser();
 
