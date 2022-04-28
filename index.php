@@ -6,6 +6,9 @@ require_once('./small-php/small/small.php');
 require_once('./src/user.php');
 
 
+
+
+
 $small = new Small();
 
 $small->get('/', function($request, $response) {
@@ -17,16 +20,34 @@ $small->get('/', function($request, $response) {
 
 $small->get('/user', function($request, $response) {
 
-    $data = getUser();
+    $data=listUser();
+    $response->setData($data);
+    
+    return $response;
+});
 
-    $response->setData(['message'=>$data]);
+$small->post('/user', function($request, $response) {
+
+    
+    $data = addUser($_POST);
+    $response->setData($data);
     
     return $response;
 });
 
 $small->get('user/{id}', function($request, $response) {
+    $id = explode('/',$_SERVER['REQUEST_URI']);
+    $data = getUser($id[2]);
+    $response->setData($data);
 
-    $response->setData(['id'=> $request->resource['id']]);
+    return $response;
+});
+
+
+$small->delete('user/{id}', function($request, $response) {
+    $id = explode('/',$_SERVER['REQUEST_URI']);
+    $data = deleteUser($id[2]);
+    $response->setData($data);
 
     return $response;
 });
