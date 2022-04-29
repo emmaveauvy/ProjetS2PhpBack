@@ -32,7 +32,7 @@ $small->post('/user', function($request, $response) {
         $data = addUser($request->params['name'], $request->params['mail'], $password);
         $response->setData($data);
     }else{
-        $response->setData('<p>This mail has already be registred</p>');
+        $response->setData(['error'=>'Un utilisateur est déjà enregistré avec ce mail']);
         $response->setResponseCode(404); 
     }
     return $response;
@@ -46,7 +46,7 @@ $small->get('user/{id}', function($request, $response) {
     
     //Verification si l'utilisateur avec cet ID existe
     if($data==false){
-        $response->setData('<p>No user with this ID</p>');
+        $response->setData(['error'=>"L'utilisateur n'existe pas"]);
         $response->setResponseCode(404);    
     }
 
@@ -60,7 +60,7 @@ $small->req('user/{id}', 'delete', function($request, $response) {
     $response->setData($data);
     
     if($data==false){
-        $response->setData('<p>No user with this ID</p>');
+        $response->setData(['error'=>"L'utilisateur n'existe pas"]);
         $response->setResponseCode(404);    
     }else{
         $data = deleteUser($request->resource['id']);
