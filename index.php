@@ -14,6 +14,19 @@ $small->get('/', function($request, $response) {
     return $response;
 });
 
+$small->post('/login', function($request, $response) {
+
+    $data=login($request->params['mail'], md5($request->params['password']));
+    if($data==false) {
+        $response->setData(['error'=>"Erreur d'identification"]);
+        $response->setResponseCode(403); 
+    }else {
+        $response->setData($data);
+    }
+    
+    return $response;
+});
+
 $small->get('/user', function($request, $response) {
 
     $data=listUser();
