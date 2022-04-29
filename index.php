@@ -5,10 +5,6 @@ require_once('./small-php/small/small.php');
 //fichier src
 require_once('./src/user.php');
 
-
-
-
-
 $small = new Small();
 
 $small->get('/', function($request, $response) {
@@ -26,47 +22,26 @@ $small->get('/user', function($request, $response) {
     return $response;
 });
 
-/*$small->post('/user', function($request, $response) {
-
-    
-    $data = addUser($_POST);
-    $response->setData($data);
-    
-    return $response;
-});*/
-
-
 $small->post('/user', function($request, $response) {
 
-    
-    $response->setResponseType('HTML');
-    $user = $request->params['user'];
-    $response->setData('<p>Hello '.$user.'</p>');
+    $password = md5($request->params['password']);
+    $data = addUser($request->params['name'], $request->params['mail'], $password);
+    $response->setData($data);
     
     return $response;
-    
 });
 
-
-
-
-
-
 $small->get('user/{id}', function($request, $response) {
-    $id = explode('/',$_SERVER['REQUEST_URI']);
-    $data = getUser($id[2]);
+    
+    $data = getUser($request->resource['id']);
     $response->setData($data);
 
     return $response;
 });
-
-
-
 
 $small->req('user/{id}', 'delete', function($request, $response) {
 
-    $id = explode('/',$_SERVER['REQUEST_URI']);
-    $data = deleteUser($id[2]);
+    $data = deleteUser($request->resource['id']);
     $response->setData($data);
 
     return $response;

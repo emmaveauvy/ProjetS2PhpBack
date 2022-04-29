@@ -7,26 +7,28 @@ function getUser($id) {
     $sth = $PDO->prepare("SELECT * FROM creators WHERE id = :id");
     $sth->execute(array('id' => $id));
 
-    return ['message' => $sth->fetch(PDO::FETCH_ASSOC)];
+    return $sth->fetch(PDO::FETCH_ASSOC);
 }
 
-function addUser($name, $mail, $passeword){
+function addUser($name, $mail, $password) {
     $PDO = getPDO();
-    $sth = $PDO->prepare("INSERT INTO creators(name, mail, passeword) values( ?, ?, ? )");
-	$sth->execute(array($name, $mail, $passeword));
+    $sth = $PDO->prepare("INSERT INTO creators(name, mail, password) values( ?, ?, ? )");
+	$sth->execute(array($name, $mail, $password));
+
 	return listUser();
 }
 
-function listUser(){
+function listUser() {
     $PDO = getPDO();
     $sth = $PDO->query("SELECT * FROM creators");
-    return $sth->fetchall();
+
+    return $sth->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function deleteUser($id){
+function deleteUser($id) {
     $PDO = getPDO();
     $sth = $PDO->prepare("DELETE FROM creators WHERE id = :id");
     $sth->execute(array('id' => $id));
-    return listUser();
 
+    return listUser();
 }
