@@ -23,15 +23,16 @@ $small->post('/login', function($request, $response) {
         $response->setData(['error'=>"Erreur d'identification"]);
         $response->setResponseCode(403); 
     }else {
-        $response->setData($data);
+        $response->setCookie('mail', $data['mail']);
+        $response->setCookie('password', $data['password']);
     }
     
     return $response;
 });
 
-$small->post('/me', function($request, $response) {
+$small->get('/me', function($request, $response) {
 
-    $data=login($request->params['mail'], $request->params['password']);
+    $data=login($request->cookies['mail'], $request->cookies['password']);
     if($data==false) {
         $response->setData(['error'=>"Utilisateur non reconnu"]);
         $response->setResponseCode(403); 
