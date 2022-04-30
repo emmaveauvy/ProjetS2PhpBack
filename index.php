@@ -3,8 +3,9 @@
 require_once('./small-php/small/small.php');
 
 //fichier src
-require_once('./src/user.php');
 require_once('./src/auth.php');
+require_once('./src/user.php');
+require_once('./src/quiz.php');
 
 
 $small = new Small();
@@ -15,6 +16,8 @@ $small->get('/', function($request, $response) {
     
     return $response;
 });
+
+// AUTH
 
 $small->post('/login', function($request, $response) {
 
@@ -42,6 +45,8 @@ $small->get('/me', function($request, $response) {
     
     return $response;
 });
+
+// USER
 
 $small->get('/user', function($request, $response) {
 
@@ -94,6 +99,28 @@ $small->req('user/{id}', 'delete', function($request, $response) {
     }else{
         $data = deleteUser($request->resource['id']);
         $response->setData($data);
+    }
+
+    return $response;
+});
+
+// QUIZ
+
+$small->get('quiz/{id}', function($request, $response) {
+
+    //return the user or false
+    $user = isConnected($request);
+    if(!$user) {
+        $response->setData(['error'=>"L'utilisateur n'est pas connecté"]);
+        $response->setResponseCode(403);  
+    }
+    
+    $data = getQuiz($request->resource['id']);
+    $response->setData($data);
+    
+    if($data==false){
+        $response->setData(['error'=>"Le quiz n'existe pas"]);
+        $response->setResponseCode(404);    
     }
 
     return $response;
