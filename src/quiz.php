@@ -2,16 +2,16 @@
 
 require_once('init.php');
 
-function addQuiz($name){
+function addQuiz($name, $id_creator){
     //vérif connexion à un compte user
     $PDO = getPDO();
-    $sth = $PDO->prepare("INSERT INTO quiz (name) VALUES (?)");
-    $sth->execute(array($name));
+    $sth = $PDO->prepare("INSERT INTO quiz (name, id_creators) VALUES (?, ?)");
+    $sth->execute(array($name, $id_creator));
 }
 
 function renameQuiz($id, $name){
     $PDO = getPDO();
-    $sth = $PDO->prepare("UPDATE quiz SET name=? WHERE id=?");
+    $sth = $PDO->prepare("UPDATE quiz SET name = ? WHERE (id = ?)");
     $sth->execute(array($name, $id));
 }
 
