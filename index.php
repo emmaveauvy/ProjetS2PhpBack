@@ -4,6 +4,8 @@ require_once('./small-php/small/small.php');
 
 //fichier src
 require_once('./src/user.php');
+require_once('./src/auth.php');
+
 
 $small = new Small();
 
@@ -19,6 +21,19 @@ $small->post('/login', function($request, $response) {
     $data=login($request->params['mail'], md5($request->params['password']));
     if($data==false) {
         $response->setData(['error'=>"Erreur d'identification"]);
+        $response->setResponseCode(403); 
+    }else {
+        $response->setData($data);
+    }
+    
+    return $response;
+});
+
+$small->post('/me', function($request, $response) {
+
+    $data=login($request->params['mail'], $request->params['password']);
+    if($data==false) {
+        $response->setData(['error'=>"Utilisateur non reconnu"]);
         $response->setResponseCode(403); 
     }else {
         $response->setData($data);
