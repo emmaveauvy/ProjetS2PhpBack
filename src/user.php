@@ -50,3 +50,5 @@ function deleteUser($id) {
 
     return listUser();
 }
+
+?>
