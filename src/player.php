@@ -24,6 +24,14 @@ function listPlayer() {
     return $sth->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function gePlayer($id) {
+    $PDO = getPDO();
+    $sth = $PDO->prepare("SELECT name, score FROM players WHERE (id = ?)");
+    $sth->execute(array($id));
+
+    return $sth->fetchAll(PDO::FETCH_ASSOC);
+}
+
 function addScore($id, $score) {
     $PDO = getPDO();
     $sth = $PDO->prepare("UPDATE players SET score = (SELECT score FROM players WHERE (id = :id)) + :score WHERE (id = :id)");//pas sûr que ça fonctionne
