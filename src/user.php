@@ -18,7 +18,7 @@ function addUser($name, $mail, $password) {
 	$sth->execute(array($name, $mail, $password));
     
 
-	return listUser();
+	return verifMail($mail);
 }
 
 function verifMail($mail){
@@ -41,7 +41,7 @@ function deleteUser($id) {
     $sth = $PDO->prepare("DELETE FROM creators WHERE id = :id");
     $sth->execute(array('id' => $id));
 
-    return listUser();
+    return true;
 }
 
 ?>
