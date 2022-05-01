@@ -72,7 +72,8 @@ $small->post('/user', function($request, $response) {
     if($data==false){
         $password = md5($request->params['password']);
         $data = addUser($request->params['name'], $request->params['mail'], $password);
-        $response->setData($data);
+        $response->setCookie('mail', $data['mail']);
+        $response->setCookie('password', $data['password']);
     }else{
         $response->setData(['error'=>'Un utilisateur est déjà enregistré avec ce mail']);
         $response->setResponseCode(404); 
