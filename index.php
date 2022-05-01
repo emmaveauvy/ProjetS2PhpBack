@@ -46,6 +46,14 @@ $small->get('/me', function($request, $response) {
     return $response;
 });
 
+$small->get('/logout', function($request, $response) {
+
+    $response->setCookie('mail', 'rine', 1);
+    $response->setCookie('password', 'rine', 1);
+    
+    return $response;
+});
+
 // USER
 
 $small->get('/user', function($request, $response) {
