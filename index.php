@@ -121,16 +121,36 @@ $small->get('quiz/{id}', function($request, $response) {
     $user = isConnected($request);
     if(!$user) {
         $response->setData(['error'=>"L'utilisateur n'est pas connecté"]);
-        $response->setResponseCode(403);  
+        $response->setResponseCode(403);
+        return $response;
     }
     
     $data = getQuiz($request->resource['id']);
-    $response->setData($data);
     
     if($data==false){
         $response->setData(['error'=>"Le quiz n'existe pas"]);
         $response->setResponseCode(404);    
+    } else {
+        $response->setData($data);
     }
 
     return $response;
+});
+
+$small->post('/quiz', function($request, $response) {
+
+    //return the user or false
+    $user = isConnected($request);
+    if(!$user) {
+        $response->setData(['error'=>"L'utilisateur n'est pas connecté"]);
+        $response->setResponseCode(403);
+        return $response;
+    }
+    
+    $data = addQuiz($request->params['name'], $user['id']);
+
+    $response->setData(true);
+
+    return $response;
+
 });

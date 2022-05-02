@@ -3,17 +3,11 @@
 require_once('init.php');
 
 function addQuiz($name, $id_creator){
-    //vérif connexion à un compte user
-    $data=login($request->cookies['mail'], $request->cookies['password']);
-    if($data==false) {
-        $response->setData(['error'=>"Utilisateur non reconnu"]);
-        $response->setResponseCode(403); 
-    }else {
-        $response->setData($data);
-        $PDO = getPDO();
-        $sth = $PDO->prepare("INSERT INTO quiz (name, id_creators) VALUES (?, ?)");
-        $sth->execute(array($name, $id_creator));
-    }
+    $PDO = getPDO();
+    $sth = $PDO->prepare("INSERT INTO quiz (name, id_creators, code) values (?, ?, ?)");
+    $sth->execute(array($name, $id_creator, 'dddsfsdf'));
+
+    return $sth->fetchAll(PDO::FETCH_ASSOC); 
 }
 
 function renameQuiz($id, $name){
@@ -22,7 +16,7 @@ function renameQuiz($id, $name){
     $sth->execute(array($name, $id));
 }
 
-function getQuiz($id){
+function getQuiz($code){
     $PDO = getPDO();
     $sth = $PDO->prepare("SELECT * FROM quiz WHERE (id = ?)");
     $sth->execute(array($id));

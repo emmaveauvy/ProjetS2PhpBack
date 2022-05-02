@@ -12,7 +12,6 @@ function getUser($id) {
 }
 
 function addUser($name, $mail, $password) {
-    //verification si mail est déjà dans BDD
     $PDO = getPDO();
     $sth = $PDO->prepare("INSERT INTO creators(name, mail, password) values( ?, ?, ? )");
 	$sth->execute(array($name, $mail, $password));
