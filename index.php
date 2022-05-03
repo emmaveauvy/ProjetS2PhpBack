@@ -115,6 +115,22 @@ $small->req('user/{id}', 'delete', function($request, $response) {
 
 // QUIZ
 
+$small->get('quiz', function($request, $response) {
+
+    //return the user or false
+    $user = isConnected($request);
+    if(!$user) {
+        $response->setData(['error'=>"L'utilisateur n'est pas connecté"]);
+        $response->setResponseCode(403);
+        return $response;
+    }
+    
+    $data = listQuiz($user['id']);
+    $response->setData($data);
+
+    return $response;
+});
+
 $small->get('quiz/{code}', function($request, $response) {
 
     //return the user or false
