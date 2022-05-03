@@ -2,12 +2,39 @@
 
 require_once('init.php');
 
-function addQuiz($name, $id_creator){
+function addQuiz($name, $questions, $id_creator) {
     $PDO = getPDO();
+    do {
+        $code = rand(1000,9999);
+        $sth = $PDO->prepare("SELECT * FROM quiz WHERE (code = ?)");
+        $sth->execute(array($code));
+        $data = $sth->fetchAll(PDO::FETCH_ASSOC); 
+    } while (count($data) != 0); // pas de quiz avec le même code
+    
     $sth = $PDO->prepare("INSERT INTO quiz (name, id_creators, code) values (?, ?, ?)");
-    $sth->execute(array($name, $id_creator, 'dddsfsdf'));
+    $sth->execute(array($name, $id_creator, $code));
 
-    return $sth->fetchAll(PDO::FETCH_ASSOC); 
+    $quiz = getQuiz($code);
+
+    //questions
+    foreach ($questions as $question){
+        $sth = $PDO->prepare("INSERT INTO questions (title, id_quiz) values (?, ?)");
+        $sth->execute(array($question['title'], intval($quiz[0]['id'])));
+
+        //get question
+        $sth = $PDO->prepare("SELECT id FROM questions WHERE (title = ?) AND (id_quiz = ?)");
+        $sth->execute(array($question['title'], intval($quiz[0]['id'])));
+        $data = $sth->fetchAll(PDO::FETCH_ASSOC);
+        $idQuestion = intval($data[0]['id']);
+
+        //responses
+        foreach ($question['answers'] as $answer){
+            $sth = $PDO->prepare("INSERT INTO responses (title, id_questions, isTrue) values (?, ?, ?)");
+            $sth->execute(array($answer['value'], $idQuestion, $answer['isTrue']));
+        }
+    }
+
+    return true;
 }
 
 function renameQuiz($id, $name){
@@ -18,8 +45,8 @@ function renameQuiz($id, $name){
 
 function getQuiz($code){
     $PDO = getPDO();
-    $sth = $PDO->prepare("SELECT * FROM quiz WHERE (id = ?)");
-    $sth->execute(array($id));
+    $sth = $PDO->prepare("SELECT * FROM quiz WHERE (code = ?)");
+    $sth->execute(array($code));
 
     return $sth->fetchAll(PDO::FETCH_ASSOC);  
 }

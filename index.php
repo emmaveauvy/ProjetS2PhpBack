@@ -115,7 +115,7 @@ $small->req('user/{id}', 'delete', function($request, $response) {
 
 // QUIZ
 
-$small->get('quiz/{id}', function($request, $response) {
+$small->get('quiz/{code}', function($request, $response) {
 
     //return the user or false
     $user = isConnected($request);
@@ -125,7 +125,7 @@ $small->get('quiz/{id}', function($request, $response) {
         return $response;
     }
     
-    $data = getQuiz($request->resource['id']);
+    $data = getQuiz($request->resource['code']);
     
     if($data==false){
         $response->setData(['error'=>"Le quiz n'existe pas"]);
@@ -147,9 +147,9 @@ $small->post('/quiz', function($request, $response) {
         return $response;
     }
     
-    $data = addQuiz($request->params['name'], $user['id']);
+    $data = addQuiz($request->params['name'], $request->params['questions'], $user['id']);
 
-    $response->setData(true);
+    $response->setData($data);
 
     return $response;
 
