@@ -3,6 +3,7 @@
 require_once('init.php');
 
 function addQuiz($name, $questions, $id_creator) {
+    var_dump($questions);
     $PDO = getPDO();
     do {
         $code = rand(1000,9999);
@@ -49,6 +50,27 @@ function getQuiz($code){
     $sth->execute(array($code));
 
     return $sth->fetchAll(PDO::FETCH_ASSOC);  
+}
+
+function getQuestions($quizCode){
+    $PDO = getPDO();
+    $sth = $PDO->prepare("SELECT * FROM quiz WHERE (code = ?)");
+    $sth->execute(array($quizCode));
+    $quiz = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+    //get questions
+    $sth = $PDO->prepare("SELECT * FROM questions WHERE (id_quiz = ?)");
+    $sth->execute(array(intval($quiz[0]['id'])));
+    $questions = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+    for ($i=0; $i < count($questions); $i++) {
+        //get answers
+        $sth = $PDO->prepare("SELECT * FROM responses WHERE (id_questions = ?)");
+        $sth->execute(array(intval($questions[$i]['id'])));
+        $questions[$i]["answers"] = $sth->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    return $questions;
 }
 
 function listQuiz($id_creator){
