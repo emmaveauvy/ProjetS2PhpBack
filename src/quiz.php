@@ -73,6 +73,20 @@ function getQuestions($quizCode){
     return $questions;
 }
 
+function getAnswers($quizCode){
+    $questions = getQuestions($quizCode);
+
+    //set all answers to 0
+    for ($i=0; $i < count($questions); $i++) {
+        for ($j=0; $j < count($questions[$i]['answers']); $j++) { 
+            $questions[$i]['answers'][$j]["isTrue"] = "0";
+        }
+    }
+    
+
+    return $questions;
+}
+
 function listQuiz($id_creator){
     $PDO = getPDO();
     $sth = $PDO->prepare("SELECT name, code FROM quiz WHERE (id_creators = ?)");

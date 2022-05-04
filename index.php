@@ -132,14 +132,6 @@ $small->get('quiz', function($request, $response) {
 });
 
 $small->get('quiz/{code}', function($request, $response) {
-
-    //return the user or false
-    $user = isConnected($request);
-    if(!$user) {
-        $response->setData(['error'=>"L'utilisateur n'est pas connecté"]);
-        $response->setResponseCode(403);
-        return $response;
-    }
     
     $data = getQuiz($request->resource['code']);
     
@@ -153,6 +145,7 @@ $small->get('quiz/{code}', function($request, $response) {
     return $response;
 });
 
+//Pour l'utilisateur qui présente
 $small->get('questions/{quizCode}', function($request, $response) {
 
     //return the user or false
@@ -164,6 +157,21 @@ $small->get('questions/{quizCode}', function($request, $response) {
     }
     
     $data = getQuestions($request->resource['quizCode']);
+    
+    if($data==false){
+        $response->setData(['error'=>"Le quiz n'existe pas"]);
+        $response->setResponseCode(404);    
+    } else {
+        $response->setData($data);
+    }
+
+    return $response;
+});
+
+//Pour l'utilisateur qui joue
+$small->get('answers/{quizCode}', function($request, $response) {
+    
+    $data = getAnswers($request->resource['quizCode']);
     
     if($data==false){
         $response->setData(['error'=>"Le quiz n'existe pas"]);
