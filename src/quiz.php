@@ -3,7 +3,6 @@
 require_once('init.php');
 
 function addQuiz($name, $questions, $id_creator) {
-    var_dump($questions);
     $PDO = getPDO();
     do {
         $code = rand(1000,9999);
@@ -15,24 +14,25 @@ function addQuiz($name, $questions, $id_creator) {
     $sth = $PDO->prepare("INSERT INTO quiz (name, id_creators, code) values (?, ?, ?)");
     $sth->execute(array($name, $id_creator, $code));
 
-    $quiz = getQuiz($code);
+    $idQuiz = intval($PDO->lastInsertId());
 
     //questions
     foreach ($questions as $question){
         $sth = $PDO->prepare("INSERT INTO questions (title, id_quiz) values (?, ?)");
-        $sth->execute(array($question['title'], intval($quiz[0]['id'])));
-
-        //get question
-        $sth = $PDO->prepare("SELECT id FROM questions WHERE (title = ?) AND (id_quiz = ?)");
-        $sth->execute(array($question['title'], intval($quiz[0]['id'])));
-        $data = $sth->fetchAll(PDO::FETCH_ASSOC);
-        $idQuestion = intval($data[0]['id']);
-
+        $sth->execute(array($question['title'], $idQuiz));
+        $idQuestion = intval($PDO->lastInsertId());
+        
         //responses
-        foreach ($question['answers'] as $answer){
-            $sth = $PDO->prepare("INSERT INTO responses (title, id_questions, isTrue) values (?, ?, ?)");
-            $sth->execute(array($answer['value'], $idQuestion, $answer['isTrue']));
+        $a = array();
+        for ($i=0; $i < count($question['answers']); $i++) {
+            array_push($a, $question['answers'][$i]['value']);
+            array_push($a, $idQuestion);
+            array_push($a, $question['answers'][$i]['isTrue'] == true ? 1 : 0);
         }
+
+        $sth = $PDO->prepare("INSERT INTO responses (title, id_questions, isTrue) values (?, ?, ?), (?, ?, ?), (?, ?, ?), (?, ?, ?)");
+        $sth->execute($a);
+        
     }
 
     return true;
@@ -99,6 +99,15 @@ function deleteQuiz($id){
     $PDO = getPDO();
     $sth = $PDO->prepare("DELETE FROM quiz WHERE id = ?");
     $sth->execute(array($id));
+}
+
+//pas testée
+function setTime($id){
+    $time = time();
+
+    $PDO = getPDO();
+    $sth = $PDO->prepare("UPDATE questions SET datetime = ? WHERE (id_quiz = ?)");
+    $sth->execute(array($time, $id));
 }
 
 ?>
