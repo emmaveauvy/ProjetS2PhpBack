@@ -45,29 +45,33 @@ function deletePlayer($id){
     $sth->execute(array($id));
 }
 
-//pas testée
-function initScore($id){
-    $PDO = getPDO();
-    $sth = $PDO->prepare("INSERT INTO players(score) VALUES 0 WHERE id = ?");
-    $sth->execute(array($id));
-}
-
-function updateScore($id, $time){
-    $delta = date_diff($time, time());//return false si fail
+function updateScore($id, $id_question){
     
-    if($delta){
-        $score = 30 - $delta; //points max = 30, min = 15 avec réponse juste
-        
-        $PDO = getPDO();
 
-        $currentScore = $PDO->query("SELECT score FROM players WHERE (id = $id)");
+    $PDO = getPDO();
+    $sth = $PDO->prepare("SELECT time FROM questions WHERE (id = ?)");
+    $sth->execute(array($id_question));
 
-        $sth = $PDO->prepare("UPDATE score SET score = ? WHERE id = ?");
-        $sth->execute(array($currentScore + $score, $id));
+    $data = $sth->fetchAll(PDO::FETCH_ASSOC);
 
-        return $sth->fetchAll(PDO::FETCH_ASSOC);
-    }
-    return false;
+    //change timezone
+    date_default_timezone_set('Europe/Paris');
+    //str to int
+    $questiontime = strtotime($data[0]['time']);
+
+    $delta = time() - $questiontime;
+
+    $score = 30 - $delta; //points max = 30, min = 15 avec réponse juste
+
+    $sth = $PDO->prepare("SELECT score FROM players WHERE (id = ?)");
+    $sth->execute(array($id));
+    $data = $sth->fetchAll(PDO::FETCH_ASSOC);
+    $currentScore = $data[0]["score"];
+
+    $sth = $PDO->prepare("UPDATE players SET score = ? WHERE id = ?");
+    $sth->execute(array($currentScore + $score, $id));
+
+    return($sth->fetchAll(PDO::FETCH_ASSOC));
 }
 
 ?>

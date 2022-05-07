@@ -101,13 +101,12 @@ function deleteQuiz($id){
     $sth->execute(array($id));
 }
 
-//pas testée
-function setTime($id){
-    $time = time();
-
+function setTime($id, $time){
     $PDO = getPDO();
-    $sth = $PDO->prepare("UPDATE questions SET datetime = ? WHERE (id_quiz = ?)");
+    $sth = $PDO->prepare("UPDATE questions SET datetime = ? WHERE (id = ?)");
     $sth->execute(array($time, $id));
+
+    return true;
 }
 
 ?>

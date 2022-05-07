@@ -6,6 +6,7 @@ require_once('./small-php/small/small.php');
 require_once('./src/auth.php');
 require_once('./src/user.php');
 require_once('./src/quiz.php');
+require_once('./src/player.php');
 
 
 $small = new Small();
@@ -194,6 +195,36 @@ $small->post('/quiz', function($request, $response) {
     }
     
     $data = addQuiz($request->params['name'], $request->params['questions'], $user['id']);
+
+    $response->setData($data);
+
+    return $response;
+
+});
+
+$small->req('/questionstart', 'put', function($request, $response) {//question start
+    
+    $data = setTime($request->params['questioncode'], time());
+
+    $response->setData($data);
+
+    return $response;
+
+});
+
+$small->req('/questionend', 'put', function($request, $response) {//question end
+    
+    $data = setTime($request->params['questioncode'], 0);
+
+    $response->setData($data);
+
+    return $response;
+
+});
+
+$small->req('/score', 'put', function($request, $response) {//question end
+    
+    $data = updateScore($request->params['playercode'], $request->params['questioncode']);
 
     $response->setData($data);
 
