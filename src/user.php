@@ -5,6 +5,7 @@ require_once('init.php');
 function getUser($id) {
     $PDO = getPDO();
     $sth = $PDO->prepare("SELECT * FROM creators WHERE id = :id");
+
     $sth->execute(array('id' => $id));
 
     return $sth->fetch(PDO::FETCH_ASSOC);
@@ -14,8 +15,17 @@ function addUser($name, $mail, $password) {
     $PDO = getPDO();
     $sth = $PDO->prepare("INSERT INTO creators(name, mail, password) values( ?, ?, ? )");
 	$sth->execute(array($name, $mail, $password));
+    
 
-	return listUser();
+	return verifMail($mail);
+}
+
+function verifMail($mail){
+    $PDO = getPDO();
+    $sth= $PDO->prepare("SELECT * FROM creators WHERE mail = :mail");
+    $sth->execute(array('mail' => $mail));
+
+    return $sth->fetch(PDO::FETCH_ASSOC);
 }
 
 function listUser() {
@@ -30,5 +40,7 @@ function deleteUser($id) {
     $sth = $PDO->prepare("DELETE FROM creators WHERE id = :id");
     $sth->execute(array('id' => $id));
 
-    return listUser();
+    return true;
 }
+
+?>
