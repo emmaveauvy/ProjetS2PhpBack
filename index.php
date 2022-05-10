@@ -250,13 +250,7 @@ $small->get('/score/{quizCode}', function($request, $response) {
     
     $data = getTableauScore($request->resource['quizCode']);
     var_dump($data);
-    
-    /*if($data==false){
-        $response->setData(['error'=>"Le quiz n'existe pas"]);
-        $response->setResponseCode(404);    
-    } else {*/
-        $response->setData($data);
-   // }
+    $response->setData($data);
 
     return $response;
 });
