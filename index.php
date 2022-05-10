@@ -147,7 +147,7 @@ $small->get('quiz/{code}', function($request, $response) {
 });
 
 //Pour l'utilisateur qui présente
-$small->get('questions/{quizCode}', function($request, $response) {
+$small->get('question/{quizCode}', function($request, $response) {
 
     //return the user or false
     $user = isConnected($request);
@@ -202,7 +202,7 @@ $small->post('/quiz', function($request, $response) {
 
 });
 
-$small->req('/questionstart', 'put', function($request, $response) {//question start
+$small->req('/question/start', 'put', function($request, $response) {//question start
     
     $data = setTime($request->params['questioncode'], time());
 
@@ -212,7 +212,7 @@ $small->req('/questionstart', 'put', function($request, $response) {//question s
 
 });
 
-$small->req('/questionend', 'put', function($request, $response) {//question end
+$small->req('/question/end', 'put', function($request, $response) {//question end
     
     $data = setTime($request->params['questioncode'], 0);
 
@@ -222,7 +222,7 @@ $small->req('/questionend', 'put', function($request, $response) {//question end
 
 });
 
-$small->req('/score', 'put', function($request, $response) {//question end
+$small->req('/score', 'put', function($request, $response) {
     
     $data = updateScore($request->params['playercode'], $request->params['questioncode']);
 
