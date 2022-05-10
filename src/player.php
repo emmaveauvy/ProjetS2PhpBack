@@ -15,6 +15,8 @@ function addPlayer($name, $id_quiz) {
     $PDO = getPDO();
     $sth = $PDO->prepare("INSERT INTO players(name, id_quiz) values( ?, ?)");
 	$sth->execute(array($name, $id_quiz));
+
+    return $idPlayer = intval($PDO->lastInsertId());
 }
 
 function listPlayer() {

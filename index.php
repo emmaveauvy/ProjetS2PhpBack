@@ -114,6 +114,15 @@ $small->req('user/{id}', 'delete', function($request, $response) {
     return $response;
 });
 
+//PLAYER
+
+$small->post('/player', function($request, $response) {
+    $data = addPlayer($request->resource['name'], $request->resource['quizcode']);
+    $response->setData($data);
+    
+    return $response;
+});
+
 // QUIZ
 
 $small->get('quiz', function($request, $response) {
