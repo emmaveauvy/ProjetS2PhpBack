@@ -111,7 +111,7 @@ function setTime($id, $time){
 
 function getTableauScore($id) {
     $PDO = getPDO();
-    $sth = $PDO->prepare("SELECT name, score FROM players WHERE id_quiz=? ORDER BY score DESC");
+    $sth = $PDO->prepare("SELECT name, score FROM players WHERE id_quiz=? ORDER BY score DESC LIMIT 0,5");
     $sth->execute(array($id));
 
     return $sth->fetchAll(PDO::FETCH_ASSOC);
