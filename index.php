@@ -232,7 +232,7 @@ $small->post('/quiz', function($request, $response) {
 
 $small->req('/question/start', 'put', function($request, $response) {//question start
     
-    $data = setTime($request->params['questioncode'], time());
+    $data = setTime($request->params['questionId'], time());
 
     $response->setData($data);
 
@@ -242,7 +242,7 @@ $small->req('/question/start', 'put', function($request, $response) {//question 
 
 $small->req('/question/end', 'put', function($request, $response) {//question end
     
-    $data = setTime($request->params['questioncode'], 0);
+    $data = setTime($request->params['questionId'], 0);
 
     $response->setData($data);
 
@@ -252,7 +252,7 @@ $small->req('/question/end', 'put', function($request, $response) {//question en
 
 $small->req('/score', 'put', function($request, $response) {
     
-    $data = updateScore($request->params['playercode'], $request->params['questioncode']);
+    $data = updateScore($request->params['playerId'], $request->params['questioncode']);
 
     $response->setData($data);
 
@@ -260,9 +260,9 @@ $small->req('/score', 'put', function($request, $response) {
 
 });
 
-$small->get('/score/{quizCode}', function($request, $response) {
+$small->get('/score/{quizId}', function($request, $response) {
     
-    $data = getTableauScore($request->resource['quizCode']);
+    $data = getTableauScore($request->resource['quizId']);
 
     if(!$data){
         $response->setData(['error'=>"Le quiz n'existe pas"]);
