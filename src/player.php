@@ -34,13 +34,6 @@ function gePlayer($id) {
     return $sth->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// function addScore($id, $score) {
-//     $PDO = getPDO();
-//     $sth = $PDO->prepare("UPDATE players SET score = (SELECT score FROM players WHERE (id = :id)) + :score WHERE (id = :id)");//pas sûr que ça fonctionne
-
-//     $sth->execute(array('id' => $id, 'score' => $score));
-// }
-
 function deletePlayer($id){
     $PDO = getPDO();
     $sth = $PDO->prepare("DELETE FROM players WHERE id = ?");
