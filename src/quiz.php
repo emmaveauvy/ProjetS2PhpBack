@@ -38,6 +38,33 @@ function addQuiz($name, $questions, $id_creator) {
     return true;
 }
 
+function updateQuiz($id, $name, $questions) {
+    $PDO = getPDO();
+    
+    $sth = $PDO->prepare("UPDATE quiz SET name = ? WHERE id = ?");
+    $sth->execute(array($name, $id));
+
+    //questions
+    foreach ($questions as $question){
+        $sth = $PDO->prepare("UPDATE questions SET title = ? WHERE id = ?");
+        $sth->execute(array($question['title'], $question['id']));
+        
+        //responses
+        $a = array();   
+        for ($i=0; $i < count($question['answers']); $i++) {
+            array_push($a, $question['answers'][$i]['value']);
+            array_push($a, $question['answers'][$i]['isTrue'] == true ? 1 : 0);
+            array_push($a, $question['id']);
+        }
+
+        $sth = $PDO->prepare("UPDATE responses SET title = ?, isTrue = ? WHERE id_question = ?");
+        $sth->execute($a);
+        
+    }
+
+    return true;
+}
+
 function renameQuiz($id, $name){
     $PDO = getPDO();
     $sth = $PDO->prepare("UPDATE quiz SET name = ? WHERE (id = ?)");

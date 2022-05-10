@@ -160,6 +160,20 @@ $small->get('/quiz/{code}', function($request, $response) {
     return $response;
 });
 
+$small->req('/quiz/update', 'put', function($request, $response) {
+    
+    $data = updateQuiz($request->params['quizcode'], $request->params['name'], $request->params['questions']);
+
+    if(!$data){
+        $response->setData(['error'=>"Erreur dans la mise à jour du quiz"]);
+        $response->setResponseCode(404);
+    }else{
+        $response->setData($data);
+    }
+
+    return $response;
+});
+
 //Pour l'utilisateur qui présente
 $small->get('/question/{quizCode}', function($request, $response) {
 
@@ -255,7 +269,6 @@ $small->get('/score/{quizCode}', function($request, $response) {
         $response->setResponseCode(404);
     }else{
         $response->setData($data);
-
     }
 
     return $response;
