@@ -83,7 +83,7 @@ $small->post('/user', function($request, $response) {
 
 });
 
-$small->get('user/{id}', function($request, $response) {
+$small->get('/user/{id}', function($request, $response) {
     
     $data = getUser($request->resource['id']);
     $response->setData($data);
@@ -97,7 +97,7 @@ $small->get('user/{id}', function($request, $response) {
     return $response;
 });
 
-$small->req('user/{id}', 'delete', function($request, $response) {
+$small->req('/user/{id}', 'delete', function($request, $response) {
 
     //Verification si l'utilisateur avec cet ID existe
     $data = getUser($request->resource['id']);
@@ -117,15 +117,20 @@ $small->req('user/{id}', 'delete', function($request, $response) {
 //PLAYER
 
 $small->post('/player', function($request, $response) {
-    $data = addPlayer($request->resource['name'], $request->resource['quizcode']);
-    $response->setData($data);
-    
-    return $response;
+    if(!verifName($request->params['name'])){
+        $data = addPlayer($request->params['name'], $request->params['quizcode']);
+        $response->setData($data);
+
+    }else{
+        $response->setData(['error'=>'Un joueur a déjà ce pseudo']);
+        $response->setResponseCode(404);
+    }
+    return $response;    
 });
 
 // QUIZ
 
-$small->get('quiz', function($request, $response) {
+$small->get('/quiz', function($request, $response) {
 
     //return the user or false
     $user = isConnected($request);
@@ -141,7 +146,7 @@ $small->get('quiz', function($request, $response) {
     return $response;
 });
 
-$small->get('quiz/{code}', function($request, $response) {
+$small->get('/quiz/{code}', function($request, $response) {
     
     $data = getQuiz($request->resource['code']);
     
@@ -156,7 +161,7 @@ $small->get('quiz/{code}', function($request, $response) {
 });
 
 //Pour l'utilisateur qui présente
-$small->get('question/{quizCode}', function($request, $response) {
+$small->get('/question/{quizCode}', function($request, $response) {
 
     //return the user or false
     $user = isConnected($request);
@@ -179,7 +184,7 @@ $small->get('question/{quizCode}', function($request, $response) {
 });
 
 //Pour l'utilisateur qui joue
-$small->get('answers/{quizCode}', function($request, $response) {
+$small->get('/answers/{quizCode}', function($request, $response) {
     
     $data = getAnswers($request->resource['quizCode']);
     

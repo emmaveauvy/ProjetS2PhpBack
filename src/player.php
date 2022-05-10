@@ -13,10 +13,10 @@ function getPlayer($id) {
 
 function addPlayer($name, $id_quiz) {
     $PDO = getPDO();
-    $sth = $PDO->prepare("INSERT INTO players(name, id_quiz) values( ?, ?)");
-	$sth->execute(array($name, $id_quiz));
+    $sth = $PDO->prepare("INSERT INTO players(name, id_quiz, score) values( ?, ?, ?)");
+	$sth->execute(array($name, $id_quiz, 0));
 
-    return $idPlayer = intval($PDO->lastInsertId());
+    return intval($PDO->lastInsertId());//return l'id du player
 }
 
 function listPlayer() {
@@ -74,6 +74,17 @@ function updateScore($id, $id_question){
     $sth->execute(array($currentScore + $score, $id));
 
     return($sth->fetchAll(PDO::FETCH_ASSOC));
+}
+
+function verifName($name){
+    $PDO = getPDO();
+    $sth = $PDO->prepare("SELECT * FROM players WHERE name = ?");
+    $sth->execute(array($name));
+
+    if($sth->fetchAll(PDO::FETCH_ASSOC)){
+        return true;
+    }
+    return false;
 }
 
 ?>
