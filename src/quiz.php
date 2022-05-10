@@ -109,4 +109,12 @@ function setTime($id, $time){
     return true;
 }
 
+function getTableauScore($id) {
+    $PDO = getPDO();
+    $sth = $PDO->prepare("SELECT name, score FROM players WHERE id_quiz=? ORDER BY score DESC");
+    $sth->execute(array($id));
+
+    return $sth->fetchAll(PDO::FETCH_ASSOC);
+}
+
 ?>
