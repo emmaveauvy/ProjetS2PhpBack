@@ -40,12 +40,12 @@ function deletePlayer($id){
     $sth->execute(array($id));
 }
 
-function updateScore($id, $code_question){
+function updateScore($id, $idQuestion){
     
 
     $PDO = getPDO();
-    $sth = $PDO->prepare("SELECT time FROM questions WHERE (code = ?)");
-    $sth->execute(array($code_question));
+    $sth = $PDO->prepare("SELECT time FROM questions WHERE (id = ?)");
+    $sth->execute(array($idQuestion));
 
     $data = $sth->fetchAll(PDO::FETCH_ASSOC);
 
