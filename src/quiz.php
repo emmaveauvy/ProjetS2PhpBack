@@ -128,7 +128,7 @@ function deleteQuiz($id){
 
 function setTime($id, $time){
     $PDO = getPDO();
-    $sth = $PDO->prepare("UPDATE questions SET datetime = ? WHERE (id = ?)");
+    $sth = $PDO->prepare("UPDATE questions SET time = ? WHERE (id = ?)");
     $sth->execute(array($time, $id));
 
     return true;

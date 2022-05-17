@@ -118,7 +118,7 @@ $small->req('/user/{id}', 'delete', function($request, $response) {
 
 $small->post('/player', function($request, $response) {
     if(!verifName($request->params['name'])){
-        $data = addPlayer($request->params['name'], $request->params['quizcode']);
+        $data = addPlayer($request->params['name'], $request->params['idquiz']);
         $response->setData($data);
 
     }else{
@@ -232,7 +232,7 @@ $small->post('/quiz', function($request, $response) {
 
 $small->req('/question/start', 'put', function($request, $response) {//question start
     
-    $data = setTime($request->params['questionId'], time());
+    $data = setTime($request->params['questionId'], date('Y-m-d h:i:s'));
 
     $response->setData($data);
 
