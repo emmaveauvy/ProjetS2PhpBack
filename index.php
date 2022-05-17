@@ -118,7 +118,7 @@ $small->req('/user/{id}', 'delete', function($request, $response) {
 
 $small->post('/player', function($request, $response) {
     if(!verifName($request->params['name'])){
-        $data = addPlayer($request->params['name'], $request->params['quizcode']);
+        $data = addPlayer($request->params['name'], $request->params['idquiz']);
         $response->setData($data);
 
     }else{
@@ -169,6 +169,25 @@ $small->req('/quiz/update', 'put', function($request, $response) {
         $response->setResponseCode(404);
     }else{
         $response->setData($data);
+    }
+
+    return $response;
+});
+
+$small->req('/quiz/start', 'delete', function($request, $response) {
+    
+    $data = deleteAnswers($request->params['idquiz']);
+
+    if(!$data){
+        $response->setData(['error'=>"Erreur dans la suppression des réponses joueur"]);
+        $response->setResponseCode(404);
+    }
+
+    $data = deletePlayers($request->params['idquiz']);
+
+    if(!$data){
+        $response->setData(['error'=>"Erreur dans la suppression des joueurs"]);
+        $response->setResponseCode(404);
     }
 
     return $response;
