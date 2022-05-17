@@ -174,6 +174,25 @@ $small->req('/quiz/update', 'put', function($request, $response) {
     return $response;
 });
 
+$small->req('/quiz/start', 'delete', function($request, $response) {
+    
+    $data = deleteAnswers($request->params['idquiz']);
+
+    if(!$data){
+        $response->setData(['error'=>"Erreur dans la suppression des réponses joueur"]);
+        $response->setResponseCode(404);
+    }
+
+    $data = deletePlayers($request->params['idquiz']);
+
+    if(!$data){
+        $response->setData(['error'=>"Erreur dans la suppression des joueurs"]);
+        $response->setResponseCode(404);
+    }
+
+    return $response;
+});
+
 //Pour l'utilisateur qui présente
 $small->get('/question/{quizCode}', function($request, $response) {
 

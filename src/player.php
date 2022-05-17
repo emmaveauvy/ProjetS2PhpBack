@@ -26,14 +26,6 @@ function listPlayer() {
     return $sth->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function gePlayer($id) {
-    $PDO = getPDO();
-    $sth = $PDO->prepare("SELECT name, score FROM players WHERE (id = ?)");
-    $sth->execute(array($id));
-
-    return $sth->fetchAll(PDO::FETCH_ASSOC);
-}
-
 function deletePlayer($id){
     $PDO = getPDO();
     $sth = $PDO->prepare("DELETE FROM players WHERE id = ?");
@@ -80,6 +72,12 @@ function verifName($name){
     return false;
 }
 
+function deletePlayers($id_quiz){
+    $PDO = getPDO();
+    $sth = $PDO->prepare("DELETE FROM players WHERE id_quiz = ?");
+    $sth->execute(array($id_quiz));
 
+    return true;
+}
 
 ?>
