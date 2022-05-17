@@ -32,10 +32,19 @@ function deletePlayer($id){
     $sth->execute(array($id));
 }
 
-function updateScore($id, $idQuestion){
-    
-
+function updateScore($id, $idQuestion, $idAnswer){
+    //recup response
     $PDO = getPDO();
+    $sth = $PDO->prepare("SELECT id FROM responses WHERE (isTrue = true and id_questions = ?)");
+    $sth->execute(array($idQuestion));
+
+    $data = $sth->fetchAll(PDO::FETCH_ASSOC);
+    var_dump($data[0]['id']);
+
+    if($data[0]['id'] != $idAnswer){
+        return;
+    }
+    
     $sth = $PDO->prepare("SELECT time FROM questions WHERE (id = ?)");
     $sth->execute(array($idQuestion));
 

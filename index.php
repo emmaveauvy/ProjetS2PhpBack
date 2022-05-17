@@ -271,7 +271,7 @@ $small->req('/question/end', 'put', function($request, $response) {//question en
 
 $small->req('/score', 'put', function($request, $response) {
     
-    $data = updateScore($request->params['playerId'], $request->params['idQuestion']);
+    $data = updateScore($request->params['playerId'], $request->params['idQuestion'], $request->params['idAnswer']);
 
     $response->setData($data);
 
