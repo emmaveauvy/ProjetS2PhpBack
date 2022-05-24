@@ -146,6 +146,21 @@ $small->get('/quiz', function($request, $response) {
     return $response;
 });
 
+$small->req('/quiz/{code}', 'delete', function($request, $response) {
+
+    //Verification si l'utilisateur avec cet ID existe
+    $data = deleteQuiz($request->resource['code']);
+    
+    if($data==false){
+        $response->setData(['error'=>"Pas de quiz avec ce code"]);
+        $response->setResponseCode(404);    
+    }else{
+        $response->setData($data);
+    }
+
+    return $response;
+});
+
 $small->get('/quiz/{code}', function($request, $response) {
     
     $data = getQuiz($request->resource['code']);
@@ -251,7 +266,7 @@ $small->post('/quiz', function($request, $response) {
 
 $small->req('/question/start', 'put', function($request, $response) {//question start
     
-    $data = setTime($request->params['questionId'], time());
+    $data = setTime($request->params['questionId'], date('Y-m-d h:i:s'));
 
     $response->setData($data);
 
@@ -271,7 +286,7 @@ $small->req('/question/end', 'put', function($request, $response) {//question en
 
 $small->req('/score', 'put', function($request, $response) {
     
-    $data = updateScore($request->params['playerId'], $request->params['idQuestion']);
+    $data = updateScore($request->params['playerId'], $request->params['idQuestion'], $request->params['idAnswer']);
 
     $response->setData($data);
 

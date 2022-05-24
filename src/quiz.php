@@ -120,15 +120,15 @@ function listQuiz($id_creator){
     return $sth->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function deleteQuiz($id){
+function deleteQuiz($code){
     $PDO = getPDO();
-    $sth = $PDO->prepare("DELETE FROM quiz WHERE id = ?");
+    $sth = $PDO->prepare("DELETE FROM quiz WHERE code = ?");
     $sth->execute(array($id));
 }
 
 function setTime($id, $time){
     $PDO = getPDO();
-    $sth = $PDO->prepare("UPDATE questions SET datetime = ? WHERE (id = ?)");
+    $sth = $PDO->prepare("UPDATE questions SET time = ? WHERE (id = ?)");
     $sth->execute(array($time, $id));
 
     return true;
