@@ -176,8 +176,15 @@ $small->get('/quiz/{code}', function($request, $response) {
 });
 
 $small->req('/quiz/update', 'put', function($request, $response) {
+
+    $user = isConnected($request);
+    if(!$user) {
+        $response->setData(['error'=>"L'utilisateur n'est pas connecté"]);
+        $response->setResponseCode(403);
+        return $response;
+    }
     
-    $data = updateQuiz($request->params['quizcode'], $request->params['name'], $request->params['questions']);
+    $data = updateQuiz($request->params['quizcode'], $request->params['name'], $request->params['questions'], $user['id']);
 
     if(!$data){
         $response->setData(['error'=>"Erreur dans la mise à jour du quiz"]);

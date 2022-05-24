@@ -2,14 +2,16 @@
 
 require_once('init.php');
 
-function addQuiz($name, $questions, $id_creator) {
+function addQuiz($name, $questions, $id_creator, $code = null) {
     $PDO = getPDO();
-    do {
-        $code = rand(1000,9999);
-        $sth = $PDO->prepare("SELECT * FROM quiz WHERE (code = ?)");
-        $sth->execute(array($code));
-        $data = $sth->fetchAll(PDO::FETCH_ASSOC); 
-    } while (count($data) != 0); // pas de quiz avec le même code
+    if($code == null) {
+        do {
+            $code = rand(1000,9999);
+            $sth = $PDO->prepare("SELECT * FROM quiz WHERE (code = ?)");
+            $sth->execute(array($code));
+            $data = $sth->fetchAll(PDO::FETCH_ASSOC); 
+        } while (count($data) != 0); // pas de quiz avec le même code
+    }
     
     $sth = $PDO->prepare("INSERT INTO quiz (name, id_creators, code) values (?, ?, ?)");
     $sth->execute(array($name, $id_creator, $code));
@@ -38,27 +40,10 @@ function addQuiz($name, $questions, $id_creator) {
     return true;
 }
 
-function updateQuiz($code, $name, $questions) {
-    $PDO = getPDO();
-    
-    $sth = $PDO->prepare("UPDATE quiz SET name = ? WHERE code = ?");
-    $sth->execute(array($name, $code));
+function updateQuiz($code, $name, $questions, $id_creator) {
 
-    //questions
-    foreach ($questions as $question){
-        $sth = $PDO->prepare("UPDATE questions SET title = ? WHERE id = ?");
-        $sth->execute(array($question['title'], $question['id']));
-        
-        //responses
-        for ($i=0; $i < count($question['answers']); $i++) {
-            $a = array(); 
-            array_push($a, $question['answers'][$i]['value']);
-            array_push($a, $question['answers'][$i]['isTrue'] == true ? 1 : 0);
-            array_push($a, $question['answers'][$i]['id']);
-            $sth = $PDO->prepare("UPDATE responses SET title = ?, isTrue = ? WHERE id = ?");
-            $sth->execute($a);
-        }
-    }
+    deleteQuiz($code);
+    return addQuiz($name, $questions, $id_creator, $code);
 
     return true;
 }
@@ -122,8 +107,31 @@ function listQuiz($id_creator){
 
 function deleteQuiz($code){
     $PDO = getPDO();
+    
+    $sth = $PDO->prepare("SELECT * FROM quiz WHERE (code = ?)");
+    $sth->execute(array($code));
+    $quiz = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+    $sth = $PDO->prepare("SELECT * FROM questions WHERE (id_quiz = ?)");
+    $sth->execute(array(intval($quiz[0]['id'])));
+    $questions = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+    for ($i=0; $i < count($questions); $i++) { 
+        $question = $questions[$i];
+        $sth = $PDO->prepare("DELETE FROM responses WHERE id_questions = ?");
+        $sth->execute(array($question["id"]));
+
+        $sth = $PDO->prepare("DELETE FROM questions WHERE id = ?");
+        $sth->execute(array($question["id"]));
+    }
+
+    $sth = $PDO->prepare("DELETE FROM players WHERE id_quiz = ?");
+    $sth->execute(array($quiz[0]['id']));
+
     $sth = $PDO->prepare("DELETE FROM quiz WHERE code = ?");
-    $sth->execute(array($id));
+    $sth->execute(array($code));
+
+    return true;
 }
 
 function setTime($id, $time){
