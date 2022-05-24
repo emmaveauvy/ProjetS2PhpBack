@@ -32,10 +32,18 @@ function deletePlayer($id){
     $sth->execute(array($id));
 }
 
-function updateScore($id, $idQuestion){
-    
-
+function updateScore($id, $idQuestion, $idAnswer){
+    //recup response
     $PDO = getPDO();
+    $sth = $PDO->prepare("SELECT id FROM responses WHERE (isTrue = true and id_questions = ?)");
+    $sth->execute(array($idQuestion));
+
+    $data = $sth->fetchAll(PDO::FETCH_ASSOC);
+
+    if($data[0]['id'] != $idAnswer){
+        return;
+    }
+    
     $sth = $PDO->prepare("SELECT time FROM questions WHERE (id = ?)");
     $sth->execute(array($idQuestion));
 
@@ -50,13 +58,17 @@ function updateScore($id, $idQuestion){
 
     $score = 30 - $delta; //points max = 30, min = 15 avec réponse juste
 
+    if($score < 15 || $score > 30){
+        return;
+    }
+
     $sth = $PDO->prepare("SELECT score FROM players WHERE (id = ?)");
     $sth->execute(array($id));
     $data = $sth->fetchAll(PDO::FETCH_ASSOC);
     $currentScore = $data[0]["score"];
 
-    $sth = $PDO->prepare("UPDATE players SET score = ? WHERE id = ?");
-    $sth->execute(array($currentScore + $score, $id));
+    $sth = $PDO->prepare("UPDATE players SET score = ? WHERE id = ?"); 
+    $sth->execute(array(intval($currentScore) + intval($score), $id));
 
     return($sth->fetchAll(PDO::FETCH_ASSOC));
 }
