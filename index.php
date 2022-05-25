@@ -117,7 +117,7 @@ $small->req('/user/{id}', 'delete', function($request, $response) {
 //PLAYER
 
 $small->post('/player', function($request, $response) {
-    if(!verifName($request->params['name'])){
+    if(!verifName($request->params['name'], $request->params['idquiz'])){
         $data = addPlayer($request->params['name'], $request->params['idquiz']);
         $response->setData($data);
 
@@ -196,15 +196,9 @@ $small->req('/quiz/update', 'put', function($request, $response) {
     return $response;
 });
 
-$small->req('/quiz/start', 'delete', function($request, $response) {
-    
-    $data = deleteAnswers($request->params['idquiz']);
+$small->req('/quiz/start', 'put', function($request, $response) {
 
-    if(!$data){
-        $response->setData(['error'=>"Erreur dans la suppression des réponses joueur"]);
-        $response->setResponseCode(404);
-    }
-
+    //clear BDD
     $data = deletePlayers($request->params['idquiz']);
 
     if(!$data){
@@ -306,8 +300,7 @@ $small->get('/score/{quizId}', function($request, $response) {
     $data = getTableauScore($request->resource['quizId']);
 
     if(!$data){
-        $response->setData(['error'=>"Le quiz n'existe pas"]);
-        $response->setResponseCode(404);
+        $response->setData([]);
     }else{
         $response->setData($data);
     }

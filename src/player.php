@@ -49,12 +49,7 @@ function updateScore($id, $idQuestion, $idAnswer){
 
     $data = $sth->fetchAll(PDO::FETCH_ASSOC);
 
-    //change timezone
-    date_default_timezone_set('Europe/Paris');
-    //str to int
-    $questiontime = strtotime($data[0]['time']);
-
-    $delta = time() - $questiontime;
+    $delta = strtotime(date('Y-m-d h:i:s')) - strtotime($data[0]['time']);
 
     $score = 30 - $delta; //points max = 30, min = 15 avec réponse juste
 
@@ -73,10 +68,10 @@ function updateScore($id, $idQuestion, $idAnswer){
     return($sth->fetchAll(PDO::FETCH_ASSOC));
 }
 
-function verifName($name){
+function verifName($name, $idquiz){
     $PDO = getPDO();
-    $sth = $PDO->prepare("SELECT * FROM players WHERE name = ?");
-    $sth->execute(array($name));
+    $sth = $PDO->prepare("SELECT * FROM players WHERE name = ? AND id_quiz = ?");
+    $sth->execute(array($name, $idquiz));
 
     if($sth->fetchAll(PDO::FETCH_ASSOC)){
         return true;

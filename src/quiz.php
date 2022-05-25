@@ -99,7 +99,7 @@ function getAnswers($quizCode){
 
 function listQuiz($id_creator){
     $PDO = getPDO();
-    $sth = $PDO->prepare("SELECT name, code FROM quiz WHERE (id_creators = ?)");
+    $sth = $PDO->prepare("SELECT name, code, id FROM quiz WHERE (id_creators = ?)");
     $sth->execute(array($id_creator));
 
     return $sth->fetchAll(PDO::FETCH_ASSOC);
@@ -148,22 +148,6 @@ function getTableauScore($id) {
     $sth->execute(array($id));
 
     return $sth->fetchAll(PDO::FETCH_ASSOC);
-}
-
-function deleteAnswers($id){
-    $PDO = getPDO();
-    $sth = $PDO->prepare("SELECT id FROM questions WHERE id_quiz = ?");
-    $sth->execute(array($id));
-
-    $id_questions = $sth->fetchAll(PDO::FETCH_ASSOC);
-
-    for($i = 0 ; $i < count($id_questions) ; $i++){
-        $sth = $PDO->prepare("DELETE FROM answer WHERE id = ?");
-        $sth->execute(array($id_questions[$i]['id']));
-    }
-
-    return true;
-
 }
 
 ?>
